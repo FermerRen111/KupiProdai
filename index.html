@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KupiProdai — Локальная доска объявлений</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>KupiProdai — Локальная доска объявлений</h1>
+
+    <!-- Вход / Регистрация -->
+    <div id="auth-section">
+      <h2>Вход / Регистрация</h2>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Пароль">
+      <button id="signup-btn">Регистрация</button>
+      <button id="login-btn">Вход</button>
+      <button id="google-btn">Войти через Google</button>
+      <p id="auth-msg"></p>
+    </div>
+
+    <!-- Панель пользователя -->
+    <div id="user-section" class="hidden">
+      <p>Привет, <span id="user-name"></span>! <button id="logout-btn">Выйти</button></p>
+
+      <h3>Создать объявление</h3>
+      <input type="text" id="ad-title" placeholder="Заголовок">
+      <textarea id="ad-desc" placeholder="Описание (до 300 символов)"></textarea>
+      <input type="text" id="ad-category" placeholder="Категория">
+      <input type="text" id="ad-contacts" placeholder="Контакты">
+      <input type="file" id="ad-photo">
+      <button id="add-ad-btn">Добавить объявление</button>
+      <p id="ad-msg"></p>
+
+      <h3>Мои объявления</h3>
+      <div id="my-ads" class="ads-list"></div>
+
+      <h3>Все одобренные объявления</h3>
+      <div id="approved-ads" class="ads-list"></div>
+
+      <!-- Панель модерации -->
+      <div id="admin-section" class="hidden">
+        <h3>Панель модерации (Admin)</h3>
+        <div id="pending-ads" class="ads-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
