@@ -1,0 +1,63 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f3f3;
+  color: #333;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1, h2, h3 {
+  color: #4B0082;
+}
+
+input, textarea, button {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+button {
+  cursor: pointer;
+  background-color: #4B0082;
+  color: #fff;
+  border: none;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #6A0DAD;
+}
+
+.hidden {
+  display: none;
+}
+
+#ad-msg, #auth-msg {
+  color: red;
+}
+
+.ad-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  background: #fafafa;
+}
+
+.ad-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
