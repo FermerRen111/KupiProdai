@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KupiProdai — Доска объявлений</title>
+  <title>KupiProdai — Локальная доска объявлений</title>
   <link rel="stylesheet" href="style.css">
 
   <!-- Firebase SDKs -->
@@ -15,7 +15,7 @@
   <div class="container">
     <h1>KupiProdai — Локальная доска объявлений</h1>
 
-    <!-- Форма входа / регистрации -->
+    <!-- Вход / Регистрация -->
     <div id="auth-section">
       <h2>Вход / Регистрация</h2>
       <input type="email" id="email" placeholder="Email">
@@ -40,15 +40,17 @@
       <p id="ad-msg"></p>
 
       <h3>Мои объявления</h3>
-      <div id="my-ads"></div>
+      <div id="my-ads" class="ads-list"></div>
 
-      <!-- Админ панель -->
+      <h3>Все одобренные объявления</h3>
+      <div id="approved-ads" class="ads-list"></div>
+
+      <!-- Панель модерации -->
       <div id="admin-section" class="hidden">
         <h3>Панель модерации (Admin)</h3>
-        <div id="pending-ads"></div>
+        <div id="pending-ads" class="ads-list"></div>
       </div>
     </div>
-
   </div>
 
   <script src="script.js"></script>
