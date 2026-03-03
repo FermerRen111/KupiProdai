@@ -248,7 +248,10 @@ function loadPendingAds() {
 
 // ====== Approve / Reject ======
 window.approveAd = id => {
-  db.collection('ads').doc(id).update({status:'approved'}).then(loadPendingAds).then(loadApprovedAds);
+  db.collection('ads').doc(id).update({status:'approved'}).then(() => {
+    loadPendingAds();
+    loadApprovedAds();
+  });
 };
 window.rejectAd = id => {
   db.collection('ads').doc(id).delete().then(loadPendingAds);
