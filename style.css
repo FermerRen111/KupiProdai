@@ -6,12 +6,12 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   background: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
 
 h1, h2, h3 {
@@ -26,6 +26,10 @@ input, textarea, button {
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
@@ -48,16 +52,41 @@ button:hover {
   color: red;
 }
 
+/* Карточки объявлений */
+.ads-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
 .ad-card {
   border: 1px solid #ccc;
   border-radius: 8px;
+  width: calc(50% - 10px);
   padding: 10px;
-  margin: 10px 0;
   background: #fafafa;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
 }
 
 .ad-card img {
   max-width: 100%;
   height: auto;
   border-radius: 5px;
+}
+
+.ad-info {
+  padding: 5px 0;
+}
+
+.ad-info h4 {
+  margin: 5px 0;
+  color: #4B0082;
+}
+
+.ad-actions button {
+  margin-right: 5px;
+  margin-top: 5px;
+  width: auto;
+  padding: 5px 10px;
+  font-size: 14px;
 }
