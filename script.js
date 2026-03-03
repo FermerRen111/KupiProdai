@@ -38,6 +38,7 @@ const addAdBtn = document.getElementById('add-ad-btn');
 const adMsg = document.getElementById('ad-msg');
 
 const myAdsDiv = document.getElementById('my-ads');
+const approvedAdsDiv = document.getElementById('approved-ads');
 const pendingAdsDiv = document.getElementById('pending-ads');
 
 // ====== Admin Email ======
@@ -47,24 +48,35 @@ const ADMIN_EMAIL = "renatyakupov0220@gmail.com";
 signupBtn.addEventListener('click', () => {
   auth.createUserWithEmailAndPassword(emailInput.value, passwordInput.value)
     .then(userCred => {
-      authMsg.textContent = "Регистрация успешна!";
+      userCred.user.sendEmailVerification()
+        .then(() => {
+          authMsg.textContent = "Регистрация успешна! Подтвердите Email для входа.";
+        });
     })
     .catch(err => authMsg.textContent = err.message);
 });
 
 loginBtn.addEventListener('click', () => {
   auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
+    .then(() => {
+      if (!auth.currentUser.emailVerified) {
+        authMsg.textContent = "Подтвердите Email для входа!";
+        auth.signOut();
+      }
+    })
     .catch(err => authMsg.textContent = err.message);
 });
 
 googleBtn.addEventListener('click', () => {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(err => authMsg.textContent = err.message);
+  auth.signInWithPopup(provider)
+    .then(result => {
+      if (!result.user.emailVerified) result.user.sendEmailVerification();
+    })
+    .catch(err => authMsg.textContent = err.message);
 });
 
-logoutBtn.addEventListener('click', () => {
-  auth.signOut();
-});
+logoutBtn.addEventListener('click', () => auth.signOut());
 
 // ====== Image Compression ======
 function compressImage(file, maxWidth=800, maxHeight=800, quality=0.7) {
@@ -147,6 +159,7 @@ addAdBtn.addEventListener('click', async () => {
     adTitle.value = adDesc.value = adCategory.value = adContacts.value = '';
     adPhoto.value = '';
     loadMyAds();
+    loadApprovedAds();
     loadPendingAds();
   } catch(err) {
     adMsg.textContent = "Ошибка загрузки фото!";
@@ -165,13 +178,40 @@ function loadMyAds() {
         const div = document.createElement('div');
         div.className = 'ad-card';
         div.innerHTML = `
-          <strong>${ad.title}</strong> [${ad.status}]<br>
-          ${ad.desc}<br>
-          <em>${ad.category}</em><br>
-          <span>${ad.contacts}</span><br>
-          <img src="${ad.photo}">
+          <img src="${ad.photo}" alt="Фото">
+          <div class="ad-info">
+            <h4>${ad.title}</h4>
+            <p>${ad.desc}</p>
+            <p><strong>Категория:</strong> ${ad.category}</p>
+            <p><strong>Контакты:</strong> ${ad.contacts}</p>
+            <p><em>Статус: ${ad.status}</em></p>
+          </div>
         `;
         myAdsDiv.appendChild(div);
+      });
+    });
+}
+
+// ====== Load Approved Ads (All Users) ======
+function loadApprovedAds() {
+  approvedAdsDiv.innerHTML = '';
+  db.collection('ads').where('status','==','approved')
+    .orderBy('createdAt','desc')
+    .get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const ad = doc.data();
+        const div = document.createElement('div');
+        div.className = 'ad-card';
+        div.innerHTML = `
+          <img src="${ad.photo}" alt="Фото">
+          <div class="ad-info">
+            <h4>${ad.title}</h4>
+            <p>${ad.desc}</p>
+            <p><strong>Категория:</strong> ${ad.category}</p>
+            <p><strong>Контакты:</strong> ${ad.contacts}</p>
+          </div>
+        `;
+        approvedAdsDiv.appendChild(div);
       });
     });
 }
@@ -189,13 +229,17 @@ function loadPendingAds() {
         const div = document.createElement('div');
         div.className = 'ad-card';
         div.innerHTML = `
-          <strong>${ad.title}</strong><br>
-          ${ad.desc}<br>
-          <em>${ad.category}</em><br>
-          <span>${ad.contacts}</span><br>
-          <img src="${ad.photo}"><br>
-          <button onclick="approveAd('${doc.id}')">Одобрить</button>
-          <button onclick="rejectAd('${doc.id}')">Отклонить</button>
+          <img src="${ad.photo}" alt="Фото">
+          <div class="ad-info">
+            <h4>${ad.title}</h4>
+            <p>${ad.desc}</p>
+            <p><strong>Категория:</strong> ${ad.category}</p>
+            <p><strong>Контакты:</strong> ${ad.contacts}</p>
+            <div class="ad-actions">
+              <button onclick="approveAd('${doc.id}')">Одобрить</button>
+              <button onclick="rejectAd('${doc.id}')">Отклонить</button>
+            </div>
+          </div>
         `;
         pendingAdsDiv.appendChild(div);
       });
@@ -204,12 +248,10 @@ function loadPendingAds() {
 
 // ====== Approve / Reject ======
 window.approveAd = id => {
-  db.collection('ads').doc(id).update({status:'approved'});
-  loadPendingAds();
+  db.collection('ads').doc(id).update({status:'approved'}).then(loadPendingAds).then(loadApprovedAds);
 };
 window.rejectAd = id => {
-  db.collection('ads').doc(id).delete();
-  loadPendingAds();
+  db.collection('ads').doc(id).delete().then(loadPendingAds);
 };
 
 // ====== Auth State ======
@@ -219,6 +261,7 @@ auth.onAuthStateChanged(user => {
     userSection.classList.remove('hidden');
     userNameSpan.textContent = user.email;
     loadMyAds();
+    loadApprovedAds();
     loadPendingAds();
   } else {
     authSection.classList.remove('hidden');
